@@ -75,7 +75,7 @@ int Queue_finalize(struct Queue *q, char clear_content) {
     if (!q) {
         return 1;
     }
-    struct Entity *data;
+    struct Entity *data = 0;
     for (; q->size; Queue_pop(q)) {
         if (clear_content) {
             Queue_top(q, &data);
