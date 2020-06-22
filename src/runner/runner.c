@@ -55,14 +55,14 @@ void *sub_runner(void *arg) {
     return 0;
 }
 
-int Runner_run(struct Runner *r, struct Stats *s) {
+int Runner_run(struct Runner *r) {
     if (!r) {
         return 1;
     }
     pthread_barrier_init(&barrier, 0, r->n_thread);
     pthread_t *pool = malloc(sizeof(pthread_t) * (r->n_thread - 1));
     struct Arg *args = malloc(sizeof(struct Arg) * (r->n_thread - 1));
-    partial_sums = malloc(sizeof(struct Stats) * (r->n_thread - 1));
+    partial_sums = calloc((r->n_thread - 1), sizeof(struct Stats));
     pthread_t *iter_pool = pool;
     struct Arg *iter_args = args;
     for (unsigned i = 0; i < r->n_thread - 1; ++i, ++iter_pool, ++iter_args) {
@@ -92,9 +92,6 @@ int Runner_run(struct Runner *r, struct Stats *s) {
             fprintf(r->fout, "num_departed: %u\n", stats.num_departed);
             fprintf(r->fout, "TIS: %lf\n", stats.TIS);
             fprintf(r->fout, "profit: %lf\n", stats.profit);
-        }
-        if (s) {
-            *s = stats;
         }
         pthread_barrier_wait(&barrier);
     }
