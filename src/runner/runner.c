@@ -24,6 +24,7 @@ void *sub_runner(void *arg) {
     double *iter_costs = r->costs;
     struct Engine engine;
     unsigned n_iter = r->n_iter / (r->n_thread - 1);
+    n_iter += id <= r->n_iter % (r->n_thread - 1) != 0;
     for (unsigned i = 0; i < r->n_param;
          ++i,
          ++iter_arrival_rate,
@@ -82,10 +83,10 @@ int Runner_run(struct Runner *r) {
             stats.profit += iter_partial_sums->profit;
         }
         memset(partial_sums, 0, sizeof(struct Stats) * (r->n_thread - 1));
-        stats.num_arrived /= r->n_iter / (r->n_thread - 1) * (r->n_thread - 1);
-        stats.num_departed /= r->n_iter / (r->n_thread - 1) * (r->n_thread - 1);
-        stats.TIS /= r->n_iter / (r->n_thread - 1) * (r->n_thread - 1);
-        stats.profit /= r->n_iter / (r->n_thread - 1) * (r->n_thread - 1);
+        stats.num_arrived /= r->n_iter;
+        stats.num_departed /= r->n_iter;
+        stats.TIS /= r->n_iter;
+        stats.profit /= r->n_iter;
         if (r->fout) {
             fprintf(r->fout, "Setting: %u\n", i);
             fprintf(r->fout, "num_arrived: %u\n", stats.num_arrived);
